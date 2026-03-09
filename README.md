@@ -684,3 +684,64 @@ This confirms that encrypted web traffic was used to maintain command-and-contro
 - **T1573** – Encrypted Channel
 
 ---
+
+# 🚩 Flag 12 – Credential Dumping Tool Identified
+
+## 📊 Evidence
+
+Process execution logs were filtered for known credential dumping indicators:
+
+- `ProcessCommandLine` contains:
+  - `"sekurlsa"`
+  - `"logonpasswords"`
+  - `"lsadump"`
+  - `"minidump"`
+  - `"mimikatz"`
+  - `"pass-the-hash"`
+
+Observed event:
+
+- **Timestamp:** 2025-11-19 19:08:26 UTC  
+- **Process:** `mm.exe`  
+- **Command:**
+  - `"mm.exe" privilege::debug sekurlsa::logonpasswords exit`
+- **Account:** kenji.sato  
+
+The command includes `sekurlsa::logonpasswords`, a well-known Mimikatz module used to dump credentials from memory.
+
+---
+
+## ❓ Flag 12 Question:
+What executable was used to perform credential dumping?
+
+## ✅ Flag 12 Answer: mm.exe
+
+---
+
+## 🧠 Analysis
+
+The attacker executed `mm.exe`, which is likely a renamed version of **Mimikatz**, to perform credential dumping.
+
+Indicators:
+
+- Use of `privilege::debug`
+- Use of `sekurlsa::logonpasswords`
+- Execution under the compromised user account
+
+Renaming Mimikatz to `mm.exe` is a common evasion tactic to:
+
+- Avoid signature-based detection  
+- Bypass basic process-name monitoring  
+- Blend in with legitimate-looking executables  
+
+This confirms that the attacker escalated their capabilities by harvesting credentials from LSASS memory.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1003.001** – OS Credential Dumping: LSASS Memory  
+- **T1555** – Credentials from Password Stores  
+- **T1036** – Masquerading
+
+---
