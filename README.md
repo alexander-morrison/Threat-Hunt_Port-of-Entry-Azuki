@@ -530,3 +530,24 @@ The task name was intentionally chosen to appear legitimate and blend in with no
 - **T1547** – Boot or Logon Autostart Execution  
 - **T1059.001** – PowerShell
 
+---
+
+# 🚩 Flag 9 – Malicious Payload Executed via Scheduled Task
+
+## 📊 Evidence
+
+The scheduled task creation command reveals the execution path of the payload.
+
+Observed execution:
+
+- **Process:** `schtasks.exe`
+- **Command:**
+  - `schtasks.exe /create /tn "Windows Update Check" /tr C:\ProgramData\WindowsCache\svchost.exe /sc daily ...`
+- **Initiating Process:** `powershell.exe`
+- **Account:** kenji.sato
+- **Timestamp:** 2025-11-19 19:07:46 UTC
+
+The `/tr` parameter specifies the program that the scheduled task will run.
+
+The configured task is set to execute: C:\ProgramData\WindowsCache\svchost.exe
+
