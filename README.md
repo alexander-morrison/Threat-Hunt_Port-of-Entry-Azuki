@@ -551,3 +551,36 @@ The `/tr` parameter specifies the program that the scheduled task will run.
 
 The configured task is set to execute: C:\ProgramData\WindowsCache\svchost.exe
 
+---
+
+## ❓ Flag 9 Question:
+What executable file was configured to run via the malicious scheduled task?
+
+## ✅ Flag 9 Answer: C:\ProgramData\WindowsCache\svchost.exe
+
+---
+
+## 🧠 Analysis
+
+The attacker configured the scheduled task to execute a malicious binary disguised as `svchost.exe`.
+
+Key observations:
+
+- The file resides in `C:\ProgramData\WindowsCache`, a previously hidden staging directory.
+- The filename mimics a legitimate Windows system process.
+- The task was set to run on a daily schedule, establishing persistent execution.
+
+Using a trusted system process name combined with a non-standard directory is a common evasion technique designed to avoid detection during casual inspection.
+
+This confirms successful payload deployment and persistence.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1053.005** – Scheduled Task/Job: Scheduled Task  
+- **T1036** – Masquerading  
+- **T1547** – Boot or Logon Autostart Execution
+
+---
+
