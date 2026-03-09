@@ -859,3 +859,66 @@ This confirms progression from credential access to data staging.
 
 ---
 
+# 🚩 Flag 15 – Data Exfiltration Destination Identified
+
+## 📊 Evidence
+
+Network events were analyzed for connections to common file-sharing and cloud storage services:
+
+Domains monitored included:
+
+- dropbox
+- drive.google
+- onedrive
+- mega
+- discord
+- slack
+- wetransfer
+- box.com
+- gofile
+- file.io
+
+Query results:
+
+- **onedrive.live.com** – 334 connections (likely legitimate activity)
+- **discord.com** – 1 connection
+
+The presence of `discord.com` indicates potential data exfiltration via a public messaging/file-sharing platform.
+
+---
+
+## ❓ Flag 15 Question:
+Which platform was used for data exfiltration?
+
+## ✅ Flag 15 Answer: discord
+
+---
+
+## 🧠 Analysis
+
+While OneDrive showed high connection volume, this is typically expected in enterprise environments.
+
+However, a connection to **discord.com** stands out because:
+
+- Discord is commonly abused for malware C2 and data exfiltration.
+- It allows file uploads via HTTPS (port 443).
+- Traffic blends with normal encrypted web activity.
+- It is often not blocked in enterprise networks.
+
+Given prior activity:
+
+1. Credential dumping (`mm.exe`)
+2. Archive creation (`export-data.zip`)
+3. External communications over HTTPS
+
+The Discord connection strongly indicates data exfiltration.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1567.002** – Exfiltration to Cloud Storage  
+- **T1041** – Exfiltration Over C2 Channel  
+- **T1071.001** – Application Layer Protocol: Web Protocols
+
+---
