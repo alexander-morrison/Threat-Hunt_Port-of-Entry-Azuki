@@ -977,3 +977,58 @@ Clearing event logs is a common defense evasion tactic used near the end of an i
 
 ---
 
+# 🚩 Flag 17 – Unauthorized Local Account Created
+
+## 📊 Evidence
+
+Process execution logs were reviewed for account manipulation using:
+
+- `net.exe`
+- `net1.exe`
+
+Observed commands:
+
+- `"net.exe" user support ******** /add`
+- `net1 user support ******** /add`
+- `"net.exe" localgroup Administrators support /add`
+- `net1 localgroup Administrators support /add`
+
+The commands clearly show creation of a new user account named: support
+
+The account was then added to the **Administrators** group.
+
+---
+
+## ❓ Flag 17 Question:
+What was the name of the newly created local account?
+
+## ✅ Flag 17 Answer: support
+
+---
+
+## 🧠 Analysis
+
+The attacker created a new local account:
+
+- **Username:** support
+- Added to: **Administrators group**
+
+This provided:
+
+- Persistent privileged access  
+- Backup access if primary credentials were revoked  
+- Ability to log in interactively or remotely  
+
+Creating a new admin account is a common persistence and privilege escalation technique used after credential dumping.
+
+The use of both `net.exe` and `net1.exe` suggests redundancy or possible evasion attempts.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1136.001** – Create Account: Local Account  
+- **T1098** – Account Manipulation  
+- **T1068** – Privilege Escalation
+
+---
