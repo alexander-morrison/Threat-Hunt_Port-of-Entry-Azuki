@@ -1150,3 +1150,64 @@ This confirms:
 - **T1078** – Valid Accounts
 
 ---
+
+# 🚩 Flag 20 – Lateral Movement Tool Identified
+
+## 📊 Evidence
+
+Process execution logs were filtered for Remote Desktop usage:
+
+Filters applied:
+
+- `FileName` in ("mstsc.exe", "mstsc")
+- Command line contains:
+  - `/v:`
+  - `-v`
+
+Observed activity:
+
+- **File Name:** mstsc.exe  
+- **Command Example:** `"mstsc.exe" /v:10.1.0.108`  
+- Multiple executions observed on 2025-11-25  
+
+This confirms the attacker used the Windows Remote Desktop client.
+
+---
+
+## ❓ Flag 20 Question:
+What tool was used to perform lateral movement?
+
+## ✅ Flag 20 Answer: mstsc.exe
+
+---
+
+## 🧠 Analysis
+
+The attacker used: mstsc.exe
+
+This is the native Windows **Remote Desktop Protocol (RDP) client**.
+
+Key indicators:
+
+- Command-line usage with `/v:<IP>`
+- Internal IP targeting (10.1.0.x range)
+- Activity occurred after credential dumping and account creation
+
+This confirms:
+
+- Use of legitimate administrative tools
+- Lateral movement via RDP
+- Likely use of stolen or newly created credentials
+
+This technique blends in with normal administrative behavior and is commonly used in post-exploitation phases.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1021.001** – Remote Services: Remote Desktop Protocol  
+- **T1078** – Valid Accounts  
+- **T1550** – Use of Stolen Credentials
+
+---
+
