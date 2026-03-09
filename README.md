@@ -583,4 +583,104 @@ This confirms successful payload deployment and persistence.
 - **T1547** – Boot or Logon Autostart Execution
 
 ---
+# 🚩 Flag 10 – Command-and-Control (C2) Communication Identified
 
+## 📊 Evidence
+
+Network connection events were analyzed using the following filters:
+
+- `DeviceName == "azuki-s1"`
+- `InitiatingProcessFileName` contains `"svchost.exe"` or `"mm.exe"`
+
+Observed suspicious outbound connection:
+
+- **Timestamp:** 2025-11-19 19:11:04 UTC  
+- **Remote IP:** 78.141.196.6  
+- **Remote Port:** 443  
+- **Initiating Process:** `svchost.exe`
+
+While other connections were made to legitimate Microsoft endpoints, this external IP stands out as unknown and previously associated with payload delivery activity.
+
+The malicious `svchost.exe` (running from the staged directory) initiated communication to this remote address over HTTPS (port 443).
+
+---
+
+## ❓ Flag 10 Question:
+What external IP address was used for command-and-control communication?
+
+## ✅ Flag 10 Answer: 78.141.196.6
+
+---
+
+## 🧠 Analysis
+
+After establishing persistence, the malicious `svchost.exe` began outbound communication to **78.141.196.6** over port 443.
+
+Key indicators:
+
+- Communication occurred shortly after scheduled task execution.
+- The IP address was previously used for payload hosting.
+- The connection originated from the masqueraded `svchost.exe` binary located in `C:\ProgramData\WindowsCache`.
+
+This behavior strongly indicates command-and-control (C2) activity, allowing the attacker to:
+
+- Issue remote commands  
+- Exfiltrate data  
+- Maintain control of the compromised host  
+
+The use of port 443 helps blend malicious traffic with normal HTTPS activity.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1071.001** – Application Layer Protocol: Web Protocols  
+- **T1105** – Ingress Tool Transfer  
+- **T1036** – Masquerading
+
+---
+
+# 🚩 Flag 11 – Port Used for Command-and-Control Communication
+
+## 📊 Evidence
+
+Network connection events show outbound traffic initiated by the malicious `svchost.exe`.
+
+Observed suspicious connection:
+
+- **Timestamp:** 2025-11-19 19:11:04 UTC  
+- **Remote IP:** 78.141.196.6  
+- **Remote Port:** 443  
+- **Initiating Process:** `svchost.exe`
+
+Multiple connections to the same external IP were observed over port **443**, indicating encrypted HTTPS communication.
+
+---
+
+## ❓ Flag 11 Question:
+What port was used for command-and-control communication?
+
+## ✅ Flag 11 Answer: 443
+
+---
+
+## 🧠 Analysis
+
+The malicious binary communicated with the external C2 server over **port 443**, which is commonly used for HTTPS traffic.
+
+Using port 443 provides several advantages to attackers:
+
+- Blends malicious traffic with legitimate encrypted web traffic  
+- Bypasses strict firewall rules that allow outbound HTTPS  
+- Makes inspection more difficult without SSL/TLS decryption  
+
+This confirms that encrypted web traffic was used to maintain command-and-control communications.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1071.001** – Application Layer Protocol: Web Protocols  
+- **T1573** – Encrypted Channel
+
+---
