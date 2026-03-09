@@ -92,6 +92,9 @@ Subsequent activity from `10.0.8.9` indicates internal movement following the in
 
 ---
 
+## ❓ Flag 1 Question:
+What was the initial access method used by the attacker?
+
 ## ✅ Flag 1 Answer: 88.97.178.12
 
 
@@ -141,6 +144,9 @@ The account `kenji.sato` successfully authenticated from the external IP address
 Subsequent logon activity from internal IP `10.0.8.9` indicates continued activity after the initial compromise.
 
 ---
+
+## ❓ Flag 2 Question:
+Which user account was used to perform the malicious activity?
 
 ## ✅ Flag 2 Answer: kenji.sato
 
@@ -199,6 +205,9 @@ The `arp -a` command enumerates the ARP cache to identify other systems on the l
 The fact that it was executed via `powershell.exe` under the compromised account strongly indicates manual reconnaissance activity.
 
 ---
+
+## ❓ Flag 3 Question:
+What command was used to perform network reconnaissance on the compromised host?
 
 ## ✅ Flag 3 Answer: arp -a
 
@@ -265,6 +274,9 @@ This action hides the directory from standard user view and reduces visibility u
 
 ---
 
+## ❓ Flag 4 Question:
+What directory was created or modified and then hidden to stage malicious files?
+
 ## ✅ Flag 4 Answer: C:\ProgramData\WindowsCache
 
 ---
@@ -317,6 +329,9 @@ This confirms that the attacker configured Windows Defender to ignore specific e
 
 ---
 
+## ❓ Flag 5 Question:
+How many file extensions were excluded from Windows Defender scanning?
+
 ## ✅ Flag 5 Answer: 3
 
 ---
@@ -361,6 +376,9 @@ The following path was added as an exclusion:
 This indicates that the attacker configured Windows Defender to ignore the user’s local Temp directory.
 
 ---
+
+## ❓ Flag 6 Question:
+Which specific path was excluded from Windows Defender scanning?
 
 ## ✅ Flag 6 Answer: C:\Users\KENJI~1.SAT\AppData\Local\Temp
 
@@ -408,6 +426,9 @@ The `-urlcache -f` flags indicate that `certutil.exe` was used to download files
 
 ---
 
+## ❓ Flag 7 Question:
+Which Living-off-the-Land Binary (LOLBAS) was used to download payloads?
+
 ## ✅ Flag 7 Answer: certutil.exe
 
 ---
@@ -440,4 +461,72 @@ This indicates active payload staging and likely malware deployment.
 
 ---
 
+## 📊 Evidence
+
+A scheduled task creation event was identified using the following query filters:
+
+- `ProcessCommandLine` contains `"schtasks"`
+- `ProcessCommandLine` contains `"/create"`
+
+Observed execution:
+
+- **Process:** `schtasks.exe`
+- **Command:** schtasks.exe /create /tn "Windows Update Check" /tr ...
+
+- **Initiating Process:** `powershell.exe`
+- **Account:** kenji.sato
+- **Timestamp:** 2025-11-19 19:07:46 UTC
+
+The `/tn` parameter specifies the task name.
+
+---
+
+# 🚩 Flag 8 – Persistence via Malicious Scheduled Task
+
+## 📊 Evidence
+
+A scheduled task creation event was identified using the following query filters:
+
+- `ProcessCommandLine` contains `"schtasks"`
+- `ProcessCommandLine` contains `"/create"`
+
+Observed execution:
+
+- **Process:** `schtasks.exe`
+- **Command:**
+  - `schtasks.exe /create /tn "Windows Update Check" /tr ...`
+- **Initiating Process:** `powershell.exe`
+- **Account:** kenji.sato
+- **Timestamp:** 2025-11-19 19:07:46 UTC
+
+The `/tn` parameter specifies the task name being created.
+
+---
+
+## ❓ Flag 8 Question:
+What was the name of the scheduled task created by the attacker?
+
+## ✅ Flag 8 Answer: Windows Update Check
+
+---
+
+## 🧠 Analysis
+
+The attacker used `schtasks.exe` to create a scheduled task named **"Windows Update Check"** as a persistence mechanism.
+
+This technique allows:
+
+- Automatic execution of malicious payloads  
+- Execution at system startup or scheduled intervals  
+- Long-term access without manual re-entry  
+
+The task name was intentionally chosen to appear legitimate and blend in with normal Windows system activity, reducing the likelihood of detection during administrative review.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1053.005** – Scheduled Task/Job: Scheduled Task  
+- **T1547** – Boot or Logon Autostart Execution  
+- **T1059.001** – PowerShell
 
