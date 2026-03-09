@@ -922,3 +922,58 @@ The Discord connection strongly indicates data exfiltration.
 - **T1071.001** – Application Layer Protocol: Web Protocols
 
 ---
+
+# 🚩 Flag 16 – Cleared Windows Event Log Identified
+
+## 📊 Evidence
+
+Process execution logs were filtered for `wevtutil.exe` usage with the `cl` (clear log) argument.
+
+Observed commands:
+
+- `"wevtutil" cl "Security"`
+- `"wevtutil" cl "System"`
+- `"wevtutil" cl "Application"`
+- `"wevtutil" cl "Microsoft-Windows-PowerShell/Operational"`
+
+The first log cleared was:
+
+- **Security**
+
+---
+
+## ❓ Flag 16 Question:
+Which Windows event log was cleared?
+
+## ✅ Flag 16 Answer: Security
+
+---
+
+## 🧠 Analysis
+
+The attacker used `wevtutil.exe cl` to clear multiple Windows event logs.
+
+Clearing the **Security** log is particularly significant because it contains:
+
+- Logon events  
+- Account activity  
+- Privilege escalation events  
+- Audit logs  
+
+This indicates deliberate anti-forensics activity to remove evidence of:
+
+- Credential dumping  
+- Privilege escalation  
+- Suspicious logins  
+
+Clearing event logs is a common defense evasion tactic used near the end of an intrusion.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1070.001** – Indicator Removal on Host: Clear Windows Event Logs  
+- **T1562.001** – Impair Defenses
+
+---
+
