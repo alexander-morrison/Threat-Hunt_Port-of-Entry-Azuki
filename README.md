@@ -1211,3 +1211,44 @@ This technique blends in with normal administrative behavior and is commonly use
 
 ---
 
+# 🔎 Threat Hunt Summary – Engagement Conclusion
+
+## Overview
+
+Between November 19–25, 2025, a threat hunt on host **azuki-sl** uncovered a full end‑to‑end compromise involving execution, credential theft, persistence, data exfiltration, log tampering, and lateral movement.
+
+The investigation confirmed hands-on-keyboard attacker activity rather than automated commodity malware.
+
+---
+
+## Key Findings
+
+- **Initial Execution:** Malicious PowerShell script `wupdate.ps1` executed from the Temp directory.
+- **Credential Access:** Renamed Mimikatz (`mm.exe`) used with `sekurlsa::logonpasswords` to dump LSASS credentials.
+- **Persistence:** Local administrator account `support` created and added to Administrators group.
+- **Data Staging:** Sensitive data compressed into `export-data.zip`.
+- **Exfiltration:** Outbound connection to `discord.com` likely used to transfer staged data.
+- **Defense Evasion:** Windows event logs (including Security log) cleared via `wevtutil`.
+- **Lateral Movement:** RDP (`mstsc.exe`) used to pivot to internal host `10.1.0.188`.
+
+---
+
+## Impact Assessment
+
+The attacker achieved:
+
+- Administrative control of the compromised host
+- Credential harvesting capability
+- Internal network pivot access
+- Successful data exfiltration
+- Log tampering to obscure activity
+
+This incident is assessed as **high severity** due to confirmed credential compromise and lateral movement.
+
+---
+
+## Conclusion
+
+The threat hunt successfully identified and reconstructed the complete attack lifecycle. Immediate containment, credential resets, log review on pivot systems, and enhanced monitoring for credential abuse and RDP activity are strongly recommended.
+
+✅ Investigation complete.
