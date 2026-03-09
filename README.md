@@ -1032,3 +1032,64 @@ The use of both `net.exe` and `net1.exe` suggests redundancy or possible evasion
 - **T1068** – Privilege Escalation
 
 ---
+
+# 🚩 Flag 18 – Malicious PowerShell Script Identified
+
+## 📊 Evidence
+
+File creation events were reviewed for PowerShell scripts created in temporary directories:
+
+Filters applied:
+
+- `ActionType == "FileCreated"`
+- `FileName` ends with `.ps1`
+- `FolderPath` contains `Temp`
+- Date: 2025-11-19
+
+Observed suspicious file:
+
+- **Timestamp:** 2025-11-19 18:49:48 UTC  
+- **File Name:** `wupdate.ps1`  
+- **Folder Path:** `C:\Users\kenji.sato\AppData\Local\Temp\wupdate.ps1`
+
+This file stands out among normal PowerShell temporary policy test scripts.
+
+---
+
+## ❓ Flag 18 Question:
+What was the name of the suspicious PowerShell script created?
+
+## ✅ Flag 18 Answer: wupdate.ps1
+
+---
+
+## 🧠 Analysis
+
+The script name `wupdate.ps1` appears to mimic a legitimate Windows Update process, suggesting:
+
+- Social engineering / masquerading
+- Defense evasion
+- Possible payload execution or staging
+
+Key indicators:
+
+- Created in the user’s Temp directory
+- Name designed to blend with Windows Update activity
+- Appears during active attacker operations timeline
+
+This script likely served as:
+
+- Initial payload
+- Persistence mechanism
+- Or staging script for further attacker activity
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1059.001** – Command and Scripting Interpreter: PowerShell  
+- **T1036** – Masquerading  
+- **T1105** – Ingress Tool Transfer
+
+---
+
