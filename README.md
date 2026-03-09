@@ -745,3 +745,58 @@ This confirms that the attacker escalated their capabilities by harvesting crede
 - **T1036** – Masquerading
 
 ---
+
+# 🚩 Flag 13 – Credential Dumping Module Used
+
+## 📊 Evidence
+
+Process execution logs reveal the specific Mimikatz module used during credential dumping.
+
+Observed event:
+
+- **Timestamp:** 2025-11-19 19:08:26 UTC  
+- **Process:** `mm.exe`  
+- **Command:**
+  - `"mm.exe" privilege::debug sekurlsa::logonpasswords exit`
+- **Account:** kenji.sato  
+
+The command clearly includes: sekurlsa::logonpasswords
+
+This module is commonly used to extract plaintext credentials and NTLM hashes from LSASS memory.
+
+---
+
+## ❓ Flag 13 Question:
+Which credential dumping module was executed?
+
+## ✅ Flag 13 Answer: sekurlsa::logonpasswords
+
+---
+
+## 🧠 Analysis
+
+The attacker used the `sekurlsa::logonpasswords` module within Mimikatz to extract credentials from memory.
+
+Key details:
+
+- `privilege::debug` enables necessary debug privileges.
+- `sekurlsa::logonpasswords` targets LSASS memory.
+- Credentials retrieved may include:
+  - Plaintext passwords  
+  - NTLM hashes  
+  - Kerberos tickets  
+
+This technique allows attackers to escalate privileges and move laterally within the environment.
+
+The use of a renamed binary (`mm.exe`) combined with direct module invocation indicates deliberate credential harvesting activity.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1003.001** – OS Credential Dumping: LSASS Memory  
+- **T1558** – Steal or Forge Kerberos Tickets  
+- **T1036** – Masquerading
+
+---
+
