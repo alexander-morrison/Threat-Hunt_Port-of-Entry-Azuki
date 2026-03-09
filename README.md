@@ -1093,3 +1093,60 @@ This script likely served as:
 
 ---
 
+# 🚩 Flag 19 – Lateral Movement Target Identified
+
+## 📊 Evidence
+
+Process execution logs were reviewed for lateral movement tools:
+
+Filters applied:
+
+- `mstsc`
+- `cmdkey`
+- `psexec`
+- `wmic`
+- `net use`
+
+Extracted target IP addresses from command line arguments.
+
+Observed activity:
+
+- `"mstsc.exe" /v:10.1.0.188`
+- Timestamp: 2025-11-22 00:38:47 UTC
+
+This indicates a Remote Desktop connection attempt to: 10.1.0.188
+
+---
+
+## ❓ Flag 19 Question:
+What IP address was targeted for lateral movement?
+
+## ✅ Flag 19 Answer: 10.1.0.188
+
+---
+
+## 🧠 Analysis
+
+The attacker used `mstsc.exe` (Microsoft Terminal Services Client) to initiate an RDP session to an internal IP address.
+
+Key observations:
+
+- Internal network IP range (10.1.0.x)
+- Occurred after credential dumping
+- Account creation had already occurred
+- Suggests use of harvested credentials
+
+This confirms:
+
+- Lateral movement within the internal network
+- Expansion of attacker foothold beyond the initial host
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1021.001** – Remote Services: Remote Desktop Protocol  
+- **T1550** – Use of Valid Accounts  
+- **T1078** – Valid Accounts
+
+---
