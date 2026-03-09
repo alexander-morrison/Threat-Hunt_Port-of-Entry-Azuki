@@ -800,3 +800,62 @@ The use of a renamed binary (`mm.exe`) combined with direct module invocation in
 
 ---
 
+# 🚩 Flag 14 – Staged Data Archive Identified
+
+## 📊 Evidence
+
+File creation events were reviewed for archive files using the following filters:
+
+- `ActionType == "FileCreated"`
+- `FileName` ends with:
+  - `.cab`
+  - `.zip`
+  - `.7z`
+
+Observed suspicious file creation:
+
+- **Timestamp:** 2025-11-19 19:08:58 UTC  
+- **File Name:** `export-data.zip`  
+- **Folder Path:** `C:\ProgramData\WindowsCache\`  
+- **File Size:** 4763 bytes  
+
+The archive was created in the same staging directory used earlier for malicious payload storage.
+
+---
+
+## ❓ Flag 14 Question:
+What was the name of the archive file created for data staging?
+
+## ✅ Flag 14 Answer: export-data.zip
+
+---
+
+## 🧠 Analysis
+
+The attacker created `export-data.zip`, likely to package collected data for exfiltration.
+
+Key indicators:
+
+- File created shortly after credential dumping activity.
+- Located in `C:\ProgramData\WindowsCache`, the established attacker staging directory.
+- Naming suggests intentional data collection and preparation.
+
+This behavior aligns with common attacker workflow:
+
+1. Harvest credentials  
+2. Collect sensitive data  
+3. Compress into an archive  
+4. Prepare for exfiltration  
+
+This confirms progression from credential access to data staging.
+
+---
+
+## 🧭 MITRE ATT&CK Mapping
+
+- **T1560.001** – Archive Collected Data: Archive via Utility  
+- **T1074.001** – Data Staged: Local Data Staging  
+- **T1003.001** – OS Credential Dumping
+
+---
+
